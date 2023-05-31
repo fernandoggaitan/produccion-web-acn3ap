@@ -9,6 +9,12 @@
 
                 <div class="card-body">
 
+                    @if (Session('status'))
+                        <div class="alert alert-success">
+                            {{ Session('status') }}
+                        </div>
+                    @endif
+
                     <div class="mb-3">
                         <a href="{{ route('productos.create') }}" class="btn btn-success"> Crear producto </a>
                     </div>
@@ -28,7 +34,7 @@
                                         <td> {{ $prod->precio_format() }} </td>
                                         <td> {{ $prod->categoria->nombre }} </td>
                                         <td>
-                                            Botón para ver
+                                            <a href="{{ route('productos.show', $prod) }}" class="btn btn-primary"> Ingresar </a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -39,6 +45,8 @@
                             @endif
                         </tbody>
                     </table>
+
+                    {{ $productos->links() }}
 
                 </div>
             </div>
