@@ -9,7 +9,17 @@
 
                 <div class="card-body">
 
-                    <form action="{{ route('productos.update', $producto) }}" method="POST">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('productos.update', $producto) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="mb-3">
@@ -32,6 +42,10 @@
                         <div class="mb-3">
                             <label for="descripcion" class="form-label"> Descripción </label>
                             <textarea class="form-control" name="descripcion" id="descripcion" cols="30" rows="10" placeholder="Ingrese la descripción del producto">{{$producto->descripcion}}</textarea>            
+                        </div>
+                        <div class="mb-3">
+                            <label for="imagen" class="form-label"> Imagen </label>
+                            <input type="file" class="form-control" id="imagen" name="imagen">
                         </div>
                         <button type="submit" class="btn btn-success"> Modificar </button>
                         <a href="{{ route('productos.index') }}" class="btn btn-danger"> Cancelar </a>

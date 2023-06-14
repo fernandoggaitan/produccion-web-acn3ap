@@ -14,4 +14,10 @@ class Categoria extends Model
         'descripcion',
     ];
 
+    public function productos()
+    {
+        //return $this->hasOne( Categoria::class, 'id', 'categoria_id' );
+        return $this->hasMany( Producto::class, 'categoria_id', 'id' );
+    }
+
 }

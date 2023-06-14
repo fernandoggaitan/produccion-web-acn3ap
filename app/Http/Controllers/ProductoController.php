@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductoController extends Controller
 {
+
+    private $rules = [
+        'nombre' => 'required|max:255',
+        'precio' => 'numeric|max:9999999',
+        'categoria_id' => 'required',
+        'descripcion' => 'required',
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -51,13 +59,10 @@ class ProductoController extends Controller
     public function store(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'nombre' => 'required|max:255',
-            'precio' => 'numeric|max:9999999',
-            'categoria_id' => 'required',
-            'descripcion' => 'required',
-            'imagen' => 'required|mimes:jpg,bmp,png,gif'
-        ], [
+        //Agregamos la validación de imágenes.
+        $this->rules['imagen'] = 'required|mimes:jpg,bmp,png,gif';
+
+        $validator = Validator::make($request->all(), $this->rules, [
             'nombre.required' => 'El nombre del producto es obligatorio.'
         ]);
 
@@ -127,11 +132,44 @@ class ProductoController extends Controller
     public function update(Request $request, Producto $producto)
     {
 
+        //El usuario está intentando enviar un archivo.
+        if($request->file('imagen')){
+            $this->rules['imagen'] = 'required|mimes:jpg,bmp,png,gif';
+        }
+
+        //Valida todo.
+        $validator = Validator::make($request->all(), $this->rules, [
+            'nombre.required' => 'El nombre del producto es obligatorio.'
+        ]);
+
+        //Si falló la validación.
+        if($validator->fails())
+        {
+            return redirect()
+                ->route('productos.edit', $producto)
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        //El usuario está intentando enviar un archivo.
+        if($request->file('imagen')){
+            
+            //Guardamos el nombre del archivo, modificando el nombre original del cliente con time.
+            $imagen_nombre = time() . $request->file('imagen')->getClientOriginalName();
+
+            //Subimos el archivo a una carpeta del proyecto y guardamos el nombre con el que subió el archivo.
+            $imagen = $request->file('imagen')->storeAs('productos', $imagen_nombre, 'public');
+
+        }else{
+            $imagen = $producto->imagen;
+        }        
+
         $producto->update([
             'nombre' => $request->nombre,
             'precio' => $request->precio,
             'categoria_id' => $request->categoria_id,
             'descripcion' => $request->descripcion,
+            'imagen' => $imagen,
         ]);
 
         return redirect()

@@ -20,15 +20,21 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('categorias', [
-    CategoriaController::class, 'index'
-])->name('categorias.index');
+Route::group(['middleware' => ['auth']], function () {
+    
+    Route::get('categorias', [
+        CategoriaController::class, 'index'
+    ])->name('categorias.index');
+    
+    Route::get('categorias/{categoria}', [
+        CategoriaController::class, 'show'
+    ])->name('categorias.show');
 
-Route::get('categorias/{categoria}', [
-    CategoriaController::class, 'show'
-])->name('categorias.show');
+    Route::group(['middleware' => ['is_admin']], function () {
+        Route::resource('productos', ProductoController::class);
+    });
 
-Route::resource('productos', ProductoController::class);
+});
 
 Auth::routes();
 

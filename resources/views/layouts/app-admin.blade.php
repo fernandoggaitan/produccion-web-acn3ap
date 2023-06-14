@@ -65,10 +65,13 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-list"></i></div>
                                 Categorías
                             </a>
-                            <a class="nav-link" href="{{ route('productos.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-cart-shopping"></i></div>
-                                Productos
-                            </a>
+
+                            @if( Auth::user()->is_admin )
+                                <a class="nav-link" href="{{ route('productos.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-cart-shopping"></i></div>
+                                    Productos
+                                </a>
+                            @endif
                         
                         </div>
                     </div>

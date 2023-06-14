@@ -29,5 +29,5 @@ class Producto extends Model
     {
         return $this->hasOne( Categoria::class, 'id', 'categoria_id' );
     }
-
+    
 }
